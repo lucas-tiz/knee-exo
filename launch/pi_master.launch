@@ -1,0 +1,55 @@
+<launch>
+	
+	<!-- declare Raspberry Pi machine -->
+	<machine 
+		name="pi"
+		default="true" 
+		address="192.168.0.211"
+		user="exo"
+		password="123456"
+		env-loader="/home/nextflex/catkin_ws/devel/remote_env_loader.sh"
+	/>
+
+	<!-- declare local machine -->
+	<machine
+		name="local"
+		address="192.168.0.210"
+		user="lucas"
+	/>
+
+	<!-- run UART communication on Raspberry Pi -->
+	<node 
+        machine="pi"
+        name="uart_comm"
+        pkg="mcu_uart" 
+        type="uart_comm" 
+        output="screen"
+    /> 
+
+	<!-- run exo control -->
+    <node
+        name="fsr_gait_est_control"
+        pkg="exo_control"
+        type="fsr_gait_est_control.py"
+        output="screen" 
+	/>
+
+    <!-- plot data -->
+	<node
+		machine="local"
+		name="pres_plot"
+		pkg="rqt_plot"
+		type="rqt_plot"
+		args="/pressure_tank/data[0] /pressure_exo/data[0] /pressure_exo/data[1] /pressure_exo/data[2] /pressure_exo/data[3] /fsr/data[0] /fsr/data[1]" 
+	/>
+    
+	<!-- record bag file -->
+	<node
+		machine="local"
+        name="rosbag_record"
+        pkg="rosbag"
+        type="record" 
+		args="record -o /home/lucas/catkin_ws/bagfiles/exo/$(arg bag_file_prefix) /pressure_tank /pressure_exo /fsr" 
+    />
+
+</launch>

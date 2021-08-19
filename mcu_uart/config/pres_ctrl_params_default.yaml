@@ -1,0 +1,9 @@
+pres_ctrl_params:
+  muscle:
+    deadband: 0.5
+    undershoot: 3.0
+    noise_threshold: 0.5
+  bladder:
+    deadband: 0.25
+    undershoot: 0.0
+    noise_threshold: 0.1
